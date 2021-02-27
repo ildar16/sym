@@ -12,7 +12,9 @@ class ArticleTest extends WebTestCase
         $client = static::createClient();
 
         $client->request('GET', '/articles');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($response->getContent(), 200);
     }
 
     public function testAddArticles()
@@ -25,37 +27,48 @@ class ArticleTest extends WebTestCase
             'user_id' => '5',
         ]);
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $success = json_decode($response->getContent())->success;
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("Article added successfully", $success);
     }
 
     public function testShowArticles()
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/articles/6');
+        $crawler = $client->request('GET', '/articles/32');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($response->getContent(), 200);
     }
 
     public function testUpdateArticles()
     {
         $client = static::createClient();
 
-        $crawler = $client->request('PUT', '/articles/6', [
+        $crawler = $client->request('PUT', '/articles/32', [
             'title' => 'test1',
             'text' => 'test1 test',
             'user_id' => '6',
         ]);
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $success = json_decode($response->getContent())->success;
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("Article updated successfully", $success);
     }
 
     public function testDeleteArticles()
     {
         $client = static::createClient();
 
-        $crawler = $client->request('DELETE', '/articles/10');
+        $crawler = $client->request('DELETE', '/articles/6');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $success = json_decode($response->getContent())->success;
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("Article deleted successfully", $success);
     }
 }

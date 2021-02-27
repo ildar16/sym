@@ -12,7 +12,9 @@ class UserTest extends WebTestCase
         $client = static::createClient();
 
         $client->request('GET', '/users');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($response->getContent(), 200);
     }
 
     public function testAddUsers()
@@ -24,16 +26,21 @@ class UserTest extends WebTestCase
             'email' => 'test@test.ru',
         ]);
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $success = json_decode($response->getContent())->success;
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("User added successfully", $success);
     }
 
     public function testShowUsers()
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/users/5');
+        $crawler = $client->request('GET', '/users/10');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($response->getContent(), 200);
     }
 
     public function testUpdateUsers()
@@ -45,16 +52,22 @@ class UserTest extends WebTestCase
             'email' => 'test1@test.ru',
         ]);
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $success = json_decode($response->getContent())->success;
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("User updated successfully", $success);
     }
 
     public function testDeleteUser()
     {
         $client = static::createClient();
 
-        $crawler = $client->request('DELETE', '/users/4');
+        $crawler = $client->request('DELETE', '/users/5');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $success = json_decode($response->getContent())->success;
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("User deleted successfully", $success);
     }
 }
 
