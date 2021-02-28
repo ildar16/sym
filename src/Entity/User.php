@@ -97,4 +97,9 @@ class User
 
         return $this;
     }
+
+    public function getAll(UserRepository $userRepository)
+    {
+        return $userRepository->findAll();
+    }
 }
